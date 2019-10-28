@@ -13,7 +13,7 @@ addFormEl.innerHTML = `
         <option value="audio">С аудио</option>
         <option value="video">С видео</option>
     </select>
-    <button class="btn btn-primary my-1">Щёлкай</button>
+    <button class="btn btn-primary my-1">Создать</button>
 `;
 
 const linkEl = addFormEl.querySelector('[data-type=text]');
@@ -26,6 +26,8 @@ addFormEl.onsubmit = function(ev) {
     posts.push({
         link, 
         type,
+        likes: 0,
+        dislikes: 0,
     }); 
     linkEl.value = '';
     typeEl.value = 'regular';
@@ -49,8 +51,8 @@ function rebuildPosts(containerEl, iterateItems) {
                     <h5>Простой пост</h5>
                     <h5>${item.link}</h5>
                   <div class="card-body">
-                    <button data-action="like" class="btn btn-primary">👍</button>
-                    <button data-action="dislike" class="btn btn-primary">👎</button>
+                    <button data-action="like" class="btn btn-primary">👍${item.likes}</button>
+                    <button data-action="dislike" class="btn btn-primary">👎${item.dislikes}</button>
                   </div>
                 </div>
            `; 
@@ -60,8 +62,8 @@ function rebuildPosts(containerEl, iterateItems) {
                   <h5>С картинкой</h5>
                   <img src="${item.link}" class="card-img-top">
                     <div class="card-body">
-                      <button data-action="like" class="btn btn-primary">👍</button>
-                      <button data-action="dislike" class="btn btn-primary">👎</button>
+                      <button data-action="like" class="btn btn-primary">👍${item.likes}</button>
+                      <button data-action="dislike" class="btn btn-primary">👎${item.dislikes}</button>
                     </div>
                 </div>
            `;
@@ -73,8 +75,8 @@ function rebuildPosts(containerEl, iterateItems) {
                       <video src="${item.link}" <video class="embed-responsive-item" controls allowfullscreen></video>
                     </div>
                     <div class="card-body">
-                        <button data-action="like" class="btn btn-primary">👍</button>
-                        <button data-action="dislike" class="btn btn-primary">👎</button>
+                        <button data-action="like" class="btn btn-primary">👍${item.likes}</button>
+                        <button data-action="dislike" class="btn btn-primary">👎${item.dislikes}</button>
                     </div>
                 </div>
            `;
@@ -84,12 +86,24 @@ function rebuildPosts(containerEl, iterateItems) {
                   <h5>С аудио</h5>
                     <audio class="embed-responsive embed-responsive-21by9 card-img-top" controls=true src="${item.link}"></audio>
                     <div class="card-body">
-                        <button data-action="like" class="btn btn-primary">👍</button>
-                        <button data-action="dislike" class="btn btn-primary">👎</button>
+                        <button data-action="like" class="btn btn-primary">👍${item.likes}</button>
+                        <button data-action="dislike" class="btn btn-primary">👎${item.dislikes}</button>
                     </div>
                 </div>
            `;
         }
+
+        const likeEl = newPostEl.querySelector('[data-action=like]');
+        likeEl.onclick = function() {
+            item.likes++;
+            rebuildPosts(containerEl, iterateItems);
+        }
+        const dislikeEl = newPostEl.querySelector('[data-action=dislike]');
+        dislikeEl.onclick = function() {
+            item.dislikes++;
+            rebuildPosts(containerEl, iterateItems);
+        }
+
         containerEl.appendChild(newPostEl);
     }
 };
